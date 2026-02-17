@@ -21,18 +21,19 @@ class MeetingWorker {
 
         while (this.isRunning) {
             try {
-                const result = await redis.blpop(Constants.REDIS_QUEUE_KEY, 5);
-
-                if (result) {
-                    const [_, jobData] = result;
+                const jobData = await redis.lpop(Constants.REDIS_QUEUE_KEY);
+                if (jobData) {
                     const job: MeetingJob = JSON.parse(jobData);
-                    
+
                     console.log(`Received job: ${job.meetingId}`);
                     await this.processMeeting(job);
+                } else {
+                    console.log('No jobs in queue, waiting 15 seconds...');
+                    await this.sleep(Constants.REDIS_POLLING_INTERVAL);
                 }
             } catch (error: any) {
                 console.error('Worker error:', error.message);
-                await this.sleep(5000);
+                await this.sleep(Constants.REDIS_POLLING_INTERVAL);
             }
         }
     }

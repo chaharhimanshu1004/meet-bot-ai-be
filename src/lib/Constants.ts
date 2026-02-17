@@ -1,12 +1,14 @@
+import { MeetingStatus } from "@prisma/client";
+
 export class Constants {
     static readonly REDIS_QUEUE_KEY = "meeting-jobs";
     static readonly MEETING_STATUS = {
-        PENDING: "PENDING",
-        JOINING: "JOINING",
-        IN_PROGRESS: "IN_PROGRESS",
-        PROCESSING: "PROCESSING",
-        COMPLETED: "COMPLETED",
-        FAILED: "FAILED",
+        PENDING: MeetingStatus.PENDING,
+        JOINING: MeetingStatus.JOINING,
+        IN_PROGRESS: MeetingStatus.IN_PROGRESS,
+        PROCESSING: MeetingStatus.PROCESSING,
+        COMPLETED: MeetingStatus.COMPLETED,
+        FAILED: MeetingStatus.FAILED,
     };
 
     static readonly DISPLAY_MESSAGES = {
@@ -21,4 +23,6 @@ export class Constants {
         UNAVAILABLE: "Summary unavailable.",
         WAITING: "Summary will appear here once the meeting is completed.",
     };
+
+    static readonly REDIS_POLLING_INTERVAL = 15000;
 }
