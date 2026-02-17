@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meetings  Meeting[]
+}
+
+model Meeting {
+  id           String   @id @default(cuid())
+  meetLink     String
+  status       MeetingStatus @default(PENDING)
+  recordingUrl String?  
+  transcript   Json?    
+  summary      String?  
+  externalId   String?  @unique
+  duration     Int?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum MeetingStatus {
+  PENDING
+  JOINING
+  IN_PROGRESS
+  PROCESSING
+  COMPLETED
+  FAILED
+}
